@@ -6,6 +6,7 @@ from learningalgorithm import ClassificationAlgorithms
 import seaborn as sns
 import itertools
 from sklearn.metrics import accuracy_score, confusion_matrix
+from joblib import dump
 
 
 # Plot settings
@@ -203,7 +204,7 @@ for i, f in zip(range(len(possible_feature_sets)), feature_names):
 # Create a grouped bar plot to compare the results
 # --------------------------------------------------------------
 
-score_df.sort_values(by = "accuracy",ascending = False)
+sortdf = score_df.sort_values(by = "accuracy",ascending = False)
 plt.figure(figsize = (10,10))
 sns.barplot(x= "model",y = "accuracy" , hue = "feature_set",data = score_df)
 plt.xlabel("Model")
@@ -222,6 +223,8 @@ plt.show()
 ) = learner.random_forest(
     X_train[feature_set_4], y_train, X_test[feature_set_4], gridsearch = True
 )
+
+
 accuracy = accuracy_score(y_test,class_test_y)
 
 classes = class_test_prob_y.columns
@@ -279,14 +282,13 @@ plt.show()
 # Use best model again and evaluate results
 # --------------------------------------------------------------
 
-(
-    class_train_y,
-    class_test_y,
-    class_train_prob_y,
-    class_train_prob_y,
-) = learner.random_forest(
+rf_model= learner.random_forest(
     X_train[feature_set_4], y_train, X_test[feature_set_4], gridsearch = True
 )
+
+
+
+dump(rf_model, '../../models/random_forest_model.joblib') 
 accuracy = accuracy_score(y_test,class_test_y)
 
 classes = class_test_prob_y.columns
